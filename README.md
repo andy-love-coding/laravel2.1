@@ -60,3 +60,14 @@
 
 - 2.7 静态文件浏览器缓存问题
   - webpack.mix.js 中加入 .version(), 然后 default.blade.php 引用css和js时用 mix()函数
+
+- 2.8 字体图标
+  - 安装：yarn add @fortawesome/fontawesome-free
+  - 载入，在 resources/sass/app.scss 中
+    ```
+    // Fontawesome
+    @import '~@fortawesome/fontawesome-free/scss/fontawesome';
+    @import '~@fortawesome/fontawesome-free/scss/regular';
+    @import '~@fortawesome/fontawesome-free/scss/solid';
+    @import '~@fortawesome/fontawesome-free/scss/brands';
+    ```
