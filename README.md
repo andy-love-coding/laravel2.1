@@ -6,7 +6,7 @@
   ```
   composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
   ```
-  
+
 - 2.3 创建应用
   ```
   composer create-project laravel/laravel laravel2.1 --prefer-dist "6.*"
@@ -57,3 +57,6 @@
     yarn add cross-env
     npm run dev
     ```
+
+- 2.7 静态文件浏览器缓存问题
+  - webpack.mix.js 中加入 .version(), 然后 default.blade.php 引用css和js时用 mix()函数
