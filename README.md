@@ -74,22 +74,28 @@
   - 编译：npm run dev ，编译后在 `public/fonts/vender/../../ ` 中会有字体图标文件
 
 ## 注册登录
-  - 3.1 [用户认证脚手架](https://learnku.com/courses/laravel-intermediate-training/6.x/registration-and-login/5541)
-    - 1.执行：php artisan ui:auth
-    - 2.修改：routes/web.php 
+- 3.1 [用户认证脚手架](https://learnku.com/courses/laravel-intermediate-training/6.x/registration-and-login/5541)
+  - 1.执行：php artisan ui:auth
+  - 2.修改：routes/web.php 
+    ```
+    Auth::routes(); // 这一行可替换掉
+    Route::get('/home', 'HomeController@index')->name('home'); // 这一行删除
+    ```
+  - 3.删除
+    ```
+    rm app/Http/Controllers/HomeController.php
+    rm resources/views/home.blade.php
+    ```
+  - 4.本地化 (中文语言包)
+    - composer require "overtrue/laravel-lang:~3.0"
+    - confit/app.php中：Illuminate\Translation\TranslationServiceProvider::class 换成Overtrue\LaravelLang\TranslationServiceProvider::class ; 并设置 'locale' => 'zh-CN',
+    - 如果想修改扩展包提供的语言文件，可以使用以下命令发布语言文件到 `resources/lang/zh-CN` 文件夹。
       ```
-      Auth::routes(); // 这一行可替换掉
-      Route::get('/home', 'HomeController@index')->name('home'); // 这一行删除
+      php artisan lang:publish zh-CN
       ```
-    - 3.删除
-      ```
-      rm app/Http/Controllers/HomeController.php
-      rm resources/views/home.blade.php
-      ```
-    - 4.本地化 (中文语言包)
-      - composer require "overtrue/laravel-lang:~3.0"
-      - confit/app.php中：Illuminate\Translation\TranslationServiceProvider::class 换成Overtrue\LaravelLang\TranslationServiceProvider::class ; 并设置 'locale' => 'zh-CN',
-      - 如果想修改扩展包提供的语言文件，可以使用以下命令发布语言文件到 `resources/lang/zh-CN` 文件夹。
-        ```
-        php artisan lang:publish zh-CN
-        ```
+
+- 3.2 用户注册
+  - 生成数据表: php artisan migrate
+  - 替换 Auth 相关的跳转，即 `App/Providers/RouteServiceProvider.php` 中的 `public const HOME = '/home';` 为 `public const HOME = '/';`
+  - 修改导航视图: _header: @guest()  @else  @endguest
+  
