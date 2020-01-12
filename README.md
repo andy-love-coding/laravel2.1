@@ -104,8 +104,8 @@
   - 生成验证码配置文件：`config/captcha.php`, 运行一些命令
     ```
     php artisan vendor:publish --provider='Mews\Captcha\CaptchaServiceProvider' // 也可以省略 "--"参数，后续再用数字选择发布的文件
+    // 执行发布配置文件，其实复制文件到 config 文件夹，即：Copied File [/vendor/mews/captcha/config/captcha.php] To [/config/captcha.php]
     ```
-    执行发布配置文件，其实复制文件到 config 文件夹，即：[/vendor/mews/captcha/config/captcha.php] To [/config/captcha.php]
   - 前端显示，在 resources/views/auth/register.blade.php 中：captcha_src() 生成验证码图片链接
   - 后端验证，在app/Http/Controllers/Auth/RegisterController.php 中增加：'captcha' => ['required', 'captcha'], 及自定义翻译
   
