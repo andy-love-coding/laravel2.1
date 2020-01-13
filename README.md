@@ -129,3 +129,14 @@
     - 强制用户认证
       - 创建中间件：`php artisan make:middleware EnsureEmailIsVerified`
       - 注册中间件：app/Http/Kernel.php → `\App\Http\Middleware\EnsureEmailIsVerified::class,`
+
+- 3.6 认证后的提示
+  - 验证过程
+    ```
+    app/Http/Controllers/Auth/VerificationController.php 
+    → use Illuminate\Foundation\Auth\VerifiesEmails;
+    → 验证成功，触发事件：event(new Verified($request->user()));
+    → 注册事件：在 app/Providers/EventServiceProvider.php 中：\Illuminate\Auth\Events\Verified::class => [\App\Listeners\EmailVerified::class,]
+    → 生成监听器：php artisan event:generate // 此命令将生成 app/Listeners/EmailVerified.php 监听器
+    → 修改监听器（EmailVerified.php）：session()->flash('success', '邮箱验证成功 ^_^');
+    ```
