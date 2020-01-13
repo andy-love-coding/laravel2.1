@@ -108,4 +108,24 @@
     ```
   - 前端显示，在 resources/views/auth/register.blade.php 中：captcha_src() 生成验证码图片链接
   - 后端验证，在app/Http/Controllers/Auth/RegisterController.php 中增加：'captcha' => ['required', 'captcha'], 及自定义翻译
-  
+
+- 3.5 [邮箱验证](https://learnku.com/courses/laravel-intermediate-training/6.x/email-verify/5545)
+  - 移动 user modle: `mv app/User.php app/Models/User.php` , 修改User.php的命名空间为`App\Models` ,替换 `App\User` 为 `App\Models\User`
+  - 修改 User 模型
+    - 实现 `MustVerifyEmail` 契约
+      ```
+      use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
+      class User extends Authenticatable implements MustVerifyEmailContract
+      ```
+    - 使用 `MustVerifyEmail` Trait
+      ```
+      use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
+      class User extends Authenticatable implements MustVerifyEmailContract
+      {
+          use Notifiable, MustVerifyEmailTrait;
+          ...
+      }
+      ```
+    - 强制用户认证
+      - 创建中间件：`php artisan make:middleware EnsureEmailIsVerified`
+      - 注册中间件：app/Http/Kernel.php → `\App\Http\Middleware\EnsureEmailIsVerified::class,`
