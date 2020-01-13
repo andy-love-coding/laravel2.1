@@ -140,3 +140,26 @@
     → 生成监听器：php artisan event:generate // 此命令将生成 app/Listeners/EmailVerified.php 监听器
     → 修改监听器（EmailVerified.php）：session()->flash('success', '邮箱验证成功 ^_^');
     ```
+
+-3.7 [重置密码成功的提示](https://learnku.com/courses/laravel-intermediate-training/6.x/password-reset/5547)
+  - 在 `app/Http/Controllers/Auth/ResetPasswordController.php` 中重写 `ResetsPasswords` 中的方法 `sendResetResponse`
+    ```
+    use Illuminate\Http\Request;
+    class ResetPasswordController extends Controller
+    {
+        use ResetsPasswords;
+        protected $redirectTo = '/';
+        public function __construct()
+        {
+            $this->middleware('guest');
+        }
+        protected function sendResetResponse(Request $request, $response)
+        {
+            session()->flash('success', '密码更新成功，您已成功登录！');
+            return redirect($this->redirectPath());
+        }
+    }
+    ```
+    - $this->redirectPath() 将获取 $redirectTo 的值；
+    - $redirectTo 跳转至 `app/Providers/RouteServiceProvider` 中定义的常量HOME `public const HOME = '/';`
+  - 此处解题思路：这里用了重写 Trait 中的方法来实现，同样可以参照3.6章节，监听在Trait中触的发事件：event(new PasswordReset($user));
