@@ -166,5 +166,16 @@
 
 ## 用户相关
   - 4.1 个人页面
-  
-
+  - 4.2 编辑个人资料
+    - Users表中添加字段：avatar、introduction, 添加字段后，记得在User模型中添加 $fillable
+    - 导航中增加入口：<a class="dropdown-item" href="{{ route('users.edit', Auth::id()) }}">编辑资料</a>
+    - UsersController 中使用 [表单请求验证(FormRequest)](https://learnku.com/docs/laravel/6.x/validation/5144#form-request-validation): public function update(UserRequest $request, User $user)
+      - 生成 UserRequest: `php artisan make:request UserRequest`
+      - 编写生成 UserRequest 规则: public function rules(){return ['name' => 'required']}
+      - 自定义翻译 UserRequest 报错信息: public function messages(return ['name.unique' => '用户名已被占用，请重新填写'])
+    - 知识点:表单验证
+      - `unique:table,column,except,idColumn` 在 table 数据表里检查 column ，除了 idColumn 为 except 的数据。except 一般在「更新」时使用。
+      - 用 `with()` 代替 session()->flash(): 
+        ```
+        return redirect()->route('users.show', $user->id)->with('success', '个人资料更新成功！');
+        ```
