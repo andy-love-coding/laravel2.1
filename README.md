@@ -214,7 +214,7 @@
     - 只有自己能编辑自己，app/Policies/UserPolicy.php：`return $currentUser->id === $user->id;`
 
 ## 帖子列表
-  - [帖子分类模型及真数据填充](https://learnku.com/courses/laravel-intermediate-training/6.x/post-categories/5558)
+  - [5.1帖子分类模型及真数据填充](https://learnku.com/courses/laravel-intermediate-training/6.x/post-categories/5558)
     - 创建分类模型 Category ，**-m** 表示创建模型的同时，顺便创建迁移文件（migration）
     ```
     php artisan make:model Models/Category -m
@@ -234,8 +234,8 @@
       up()中：DB::table('categories')->insert($categories);
       down()中：DB::table('categories')->truncate();
       ```
-  - [代码生成器（Laravel 5.x Scaffold Generator）](https://learnku.com/courses/laravel-intermediate-training/6.x/code-generator/5559)
+  - [5.2代码生成器（Laravel 5.x Scaffold Generator）](https://learnku.com/courses/laravel-intermediate-training/6.x/code-generator/5559)
     - 安装代码生成器： `composer require "summerblue/generator:6.*" --dev`
+
+  - [5.3生成话题骨架](https://learnku.com/courses/laravel-intermediate-training/6.x/generate-topic/5560)
     - 
-
-
