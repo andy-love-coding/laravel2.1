@@ -73,7 +73,7 @@
     ```
   - 编译：npm run dev ，编译后在 `public/fonts/vender/../../ ` 中会有字体图标文件
 
-## 注册登录
+## 3注册登录
 - 3.1 [用户认证脚手架](https://learnku.com/courses/laravel-intermediate-training/6.x/registration-and-login/5541)
   - 1.执行：php artisan ui:auth
   - 2.修改：routes/web.php 
@@ -164,11 +164,11 @@
     - $redirectTo 跳转至 `app/Providers/RouteServiceProvider` 中定义的常量HOME `public const HOME = '/';`
   - 此处解题思路：这里用了重写 Trait 中的方法来实现，同样可以参照3.6章节，监听在Trait中触的发事件：event(new PasswordReset($user));
 
-## 用户相关
+## 4用户相关
   - 4.1 个人页面
   - 4.2 编辑个人资料
     - Users表中添加字段：avatar、introduction, 添加字段后，记得在User模型中添加 $fillable
-    - 导航中增加入口：<a class="dropdown-item" href="{{ route('users.edit', Auth::id()) }}">编辑资料</a>
+    - 导航中增加入口：`<a class="dropdown-item" href="{{ route('users.edit', Auth::id()) }}">编辑资料</a>`
     - UsersController 中使用 [表单请求验证(FormRequest)](https://learnku.com/docs/laravel/6.x/validation/5144#form-request-validation): public function update(UserRequest $request, User $user)
       - 生成 UserRequest: `php artisan make:request UserRequest`
       - 编写生成 UserRequest 规则: public function rules(){return ['name' => 'required']}
@@ -179,3 +179,16 @@
         ```
         return redirect()->route('users.show', $user->id)->with('success', '个人资料更新成功！');
         ```
+  - 4.4 上传头像
+    - 创建工具类（图片处理器）：app/Handlers/ImageUploadHandler.php
+    - 在类引入，即可使用：use App\Handlers\ImageUploadHandler;
+    - git 版本管理中，忽略图片文件夹：public/uploads/images/avatars/.gitignore
+      ```
+      *
+      !.gitignore
+      ```
+      上面的两行代码意为：当前文件夹下，忽略所有文件，除了 .gitignore。
+
+
+
+
