@@ -234,7 +234,8 @@
       up()中：DB::table('categories')->insert($categories);
       down()中：DB::table('categories')->truncate();
       ```
-
-
+  - [代码生成器（Laravel 5.x Scaffold Generator）](https://learnku.com/courses/laravel-intermediate-training/6.x/code-generator/5559)
+    - 安装代码生成器： `composer require "summerblue/generator:6.*" --dev`
+    - 
 
 
