@@ -194,6 +194,21 @@
       ```
       'avatar' => 'mimes:jpeg,bmp,png,gif|dimensions:min_width=208,min_height=208',     
       ```
+  - 4.6 [裁剪头像](https://learnku.com/courses/laravel-intermediate-training/6.x/avatar-croping/5555)
+    - 安装 [Intervention/image](https://github.com/Intervention/image) 扩展包来处理图片裁切的逻辑
+      ```
+      composer require intervention/image
+      ```
+    - 获取配置信息
+      ```
+      php artisan vendor:publish // 然后通过数字选择要发布的文件，也可以直接带上参数如：--provider="Intervention\Image\ImageServiceProviderLaravelRecent"
+      ```
+    - 修改图片处理类：app/Handlers/ImageUploadHandler.php
+      ```
+      use Image;
+      public function save($file, $folder, $file_prefix, $max_width = false)
+      $image->resize($max_width, null, function ($constraint){}
+      ```
 
 
 
