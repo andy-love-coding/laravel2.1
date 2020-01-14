@@ -204,7 +204,7 @@
       php artisan vendor:publish // 然后通过数字选择要发布的文件，也可以直接带上参数如：--provider="Intervention\Image\ImageServiceProviderLaravelRecent"
       ```
     - 修改图片处理类：app/Handlers/ImageUploadHandler.php
-      ```
+      ```php
       use Image;
       public function save($file, $folder, $file_prefix, $max_width = false)
       $image->resize($max_width, null, function ($constraint){}
@@ -212,6 +212,28 @@
   - 4.8 授权访问
     - 限制游客访问，在 UsersController 中： `$this->middleware('auth', ['except' => ['show']]);`
     - 只有自己能编辑自己，app/Policies/UserPolicy.php：`return $currentUser->id === $user->id;`
+
+## 帖子列表
+  - [帖子分类模型及真数据填充](https://learnku.com/courses/laravel-intermediate-training/6.x/post-categories/5558)
+    - 创建分类模型 Category ，**-m** 表示创建模型的同时，顺便创建迁移文件（migration）
+    ```
+    php artisan make:model Models/Category -m
+    ```
+      - 分类模型 Category
+      ```
+      public $timestamps = false; // 数据表为生成时间戳，此处告知 Laravel 不需要维护 created_at 和 updated_at
+      protected $fillable = [ 'name', 'description', ];
+      ``` 
+    - 填充：用迁移文件（migration）来填充分类数据，而不是用 seeder 填充文件来填充。
+      原因是：填充文件一般用来填充假数据，生产环境不执行；而分类数据是真数据，所以放在迁移文件中来填充，迁移文件在生产环境中也会执行。
+      ```
+      php artisan make:migration seed_categories_data // 一般命名规范为：seed_(数据库表名称)_data
+      ```
+      database/migrations/{timestamp}_seed_categories_data.php 关键代码如下：
+      ```
+      up()中：DB::table('categories')->insert($categories);
+      down()中：DB::table('categories')->truncate();
+      ```
 
 
 
