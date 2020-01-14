@@ -188,6 +188,12 @@
       !.gitignore
       ```
       上面的两行代码意为：当前文件夹下，忽略所有文件，除了 .gitignore。
+  - 4.5 显示头像&现在图片分辨率
+    - 在导航和个人页面中显示头像
+    - 在表单验证类 UserRequest 中验证图片的类型和分辨率
+      ```
+      'avatar' => 'mimes:jpeg,bmp,png,gif|dimensions:min_width=208,min_height=208',     
+      ```
 
 
 
