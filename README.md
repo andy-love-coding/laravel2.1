@@ -194,7 +194,7 @@
       ```
       'avatar' => 'mimes:jpeg,bmp,png,gif|dimensions:min_width=208,min_height=208',     
       ```
-  - 4.6 [裁剪头像](https://learnku.com/courses/laravel-intermediate-training/6.x/avatar-croping/5555)
+  - 4.7 [裁剪头像](https://learnku.com/courses/laravel-intermediate-training/6.x/avatar-croping/5555)
     - 安装 [Intervention/image](https://github.com/Intervention/image) 扩展包来处理图片裁切的逻辑
       ```
       composer require intervention/image
@@ -209,6 +209,9 @@
       public function save($file, $folder, $file_prefix, $max_width = false)
       $image->resize($max_width, null, function ($constraint){}
       ```
+  - 4.8 授权访问
+    - 限制游客访问，在 UsersController 中： `$this->middleware('auth', ['except' => ['show']]);`
+    - 只有自己能编辑自己，app/Policies/UserPolicy.php：`return $currentUser->id === $user->id;`
 
 
 
