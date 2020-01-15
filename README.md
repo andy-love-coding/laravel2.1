@@ -213,7 +213,7 @@
     - 限制游客访问，在 UsersController 中： `$this->middleware('auth', ['except' => ['show']]);`
     - 只有自己能编辑自己，app/Policies/UserPolicy.php：`return $currentUser->id === $user->id;`
 
-## 帖子列表
+## 5帖子列表
   - [5.1帖子分类模型及真数据填充](https://learnku.com/courses/laravel-intermediate-training/6.x/post-categories/5558)
     - 创建分类模型 Category ，**-m** 表示创建模型的同时，顺便创建迁移文件（migration）
     ```
@@ -238,4 +238,27 @@
     - 安装代码生成器： `composer require "summerblue/generator:6.*" --dev`
 
   - [5.3生成话题骨架](https://learnku.com/courses/laravel-intermediate-training/6.x/generate-topic/5560)
-    - 
+    - 生成骨架命令
+      ```
+      php artisan make:scaffold Topic --schema="
+      title:string:index,body:text,
+      user_id:bigInteger:unsigned:index,
+      category_id:integer:unsigned:index,
+      reply_count:integer:unsigned:default(0),
+      view_count:integer:unsigned:default(0),
+      last_reply_user_id:integer:unsigned:default(0),
+      order:integer:unsigned:default(0),
+      excerpt:text:nullable,slug:string:nullable"
+      ```
+  - [5.4填充用户和话题数据](https://learnku.com/courses/laravel-intermediate-training/6.x/seeding-data/5561)
+    - TopicFactory
+      ```
+      // 随机取一个月以内的时间
+      $updated_at = $faker->dateTimeThisMonth();
+      // 传参为生成最大时间不超过，因为创建时间需永远比更改时间要早
+      $created_at = $faker->dateTimeThisMonth($updated_at);
+      ```
+  - 5.5话题列表页面
+    - resources/views/topics/index.blade.php
+    - resources/views/topics/_topic_list.blade.php
+    - resources/views/topics/_sidebar.blade.php
