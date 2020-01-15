@@ -262,3 +262,17 @@
     - resources/views/topics/index.blade.php
     - resources/views/topics/_topic_list.blade.php
     - resources/views/topics/_sidebar.blade.php
+
+  - [5.6性能优化(避免N+1问题)] (https://learnku.com/courses/laravel-intermediate-training/6.x/improve-performance/5563)
+    - 安装 Debugbar 工具
+      ```
+      composer require "barryvdh/laravel-debugbar:~3.2" --dev // 主版本号.次版本号.修订号， ~ 表示: 3.2 <= 版本号 < 4.0
+      ```
+      - 发布
+        ```
+        php artisan vendor:publish // 选择对应数字后，Copied File [/vendor/barryvdh/laravel-debugbar/config/debugbar.php] To [/config/debugbar.php]
+        ```
+      - 设置 config/debugbar.php
+        ```
+        'enabled' => env('APP_DEBUG', false),
+        ```
