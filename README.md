@@ -307,7 +307,7 @@
       <li class="nav-item {{ category_nav_active(2) }}"><a class="nav-link" href="{{ route('categories.show', 2) }}">教程</a></li>
       ```
   - [5.8话题列表排序（本地作用域）](https://learnku.com/courses/laravel-intermediate-training/6.x/topic-order/5565)
-    - 由于 Topics.index 和 Categories.show 中都要对 topic 进行排序，所以在 Topic 模型中定义**本地作用**
+    - 由于 Topics.index 和 Categories.show 中都要对 topic 进行排序，所以在 Topic 模型中定义**本地作用域**
       ```
       public function scopeWithOrder($query, $order)
       ```
@@ -327,3 +327,14 @@
       ```
       Request::url() 获取的是当前请求的 URL
     - [本地作用域](https://learnku.com/docs/laravel/6.x/eloquent/5176#4330c1)说明文档
+  - 5.9 用户发布的话题列表
+    - 导航栏加icon
+    - User模型新增一对多关联模型：return $this->hasMany(Topic::class);
+    - 修改视图 users.show
+      ```
+      @include('users._topics', ['topics' => $user->topics()->recent()->paginate(5)])
+      ```
+    - 新建视图：resources/views/users/_topics.blade.php
+      ```
+      <li class="list-group-item pl-2 pr-2 border-right-0 border-left-0 @if($loop->first) border-top-0 @endif">
+      ```
