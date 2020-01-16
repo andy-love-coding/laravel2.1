@@ -306,5 +306,24 @@
       <li class="nav-item {{ category_nav_active(1) }}"><a class="nav-link" href="{{ route('categories.show', 1) }}">分享</a></li>
       <li class="nav-item {{ category_nav_active(2) }}"><a class="nav-link" href="{{ route('categories.show', 2) }}">教程</a></li>
       ```
-
-
+  - [5.8话题列表排序（本地作用域）](https://learnku.com/courses/laravel-intermediate-training/6.x/topic-order/5565)
+    - 由于 Topics.index 和 Categories.show 中都要对 topic 进行排序，所以在 Topic 模型中定义**本地作用**
+      ```
+      public function scopeWithOrder($query, $order)
+      ```
+    - TopicsController.php 中使用定义好的「本地作用域」
+      ```
+      $topics = $topic->withOrder($request->order)->with('user', 'category')->paginate(20);
+      ```
+    - CategoriesController 中使用定义好的「本地作用域」
+      ```
+      $topics = $topic->withOrder($request->order)->where('category_id', $category->id)->with('user', 'category')->paginate(20);
+      ```
+    - 修改视图 topics.index
+      ```
+      <a class="nav-link {{ active_class( ! if_query('order', 'recent')) }}" href="{{ Request::url() }}?order=default">
+        最后回复
+      </a>
+      ```
+      Request::url() 获取的是当前请求的 URL
+    - [本地作用域](https://learnku.com/docs/laravel/6.x/eloquent/5176#4330c1)说明文档
