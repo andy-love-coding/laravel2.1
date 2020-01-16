@@ -130,7 +130,7 @@
       - 创建中间件：`php artisan make:middleware EnsureEmailIsVerified`
       - 注册中间件：app/Http/Kernel.php → `\App\Http\Middleware\EnsureEmailIsVerified::class,`
 
-- 3.6 认证后的提示
+- 3.6 [认证后的提示](https://learnku.com/courses/laravel-intermediate-training/6.x/tips-after-certification/5546)
   - 验证过程
     ```
     app/Http/Controllers/Auth/VerificationController.php 
@@ -164,7 +164,7 @@
     - $redirectTo 跳转至 `app/Providers/RouteServiceProvider` 中定义的常量HOME `public const HOME = '/';`
   - 此处解题思路：这里用了重写 Trait 中的方法来实现，同样可以参照3.6章节，监听在Trait中触的发事件：event(new PasswordReset($user));
 
-## 4用户相关
+## 4 用户相关
   - 4.1 个人页面
   - 4.2 编辑个人资料
     - Users表中添加字段：avatar、introduction, 添加字段后，记得在User模型中添加 $fillable
@@ -214,7 +214,7 @@
     - 只有自己能编辑自己，app/Policies/UserPolicy.php：`return $currentUser->id === $user->id;`
 
 ## 5帖子列表
-  - [5.1帖子分类模型及真数据填充](https://learnku.com/courses/laravel-intermediate-training/6.x/post-categories/5558)
+  - 5.1 [帖子分类模型及真数据填充](https://learnku.com/courses/laravel-intermediate-training/6.x/post-categories/5558)
     - 创建分类模型 Category ，**-m** 表示创建模型的同时，顺便创建迁移文件（migration）
     ```
     php artisan make:model Models/Category -m
@@ -234,10 +234,10 @@
       up()中：DB::table('categories')->insert($categories);
       down()中：DB::table('categories')->truncate();
       ```
-  - [5.2代码生成器（Laravel 5.x Scaffold Generator）](https://learnku.com/courses/laravel-intermediate-training/6.x/code-generator/5559)
+  - 5.2 [代码生成器（Laravel 5.x Scaffold Generator）](https://learnku.com/courses/laravel-intermediate-training/6.x/code-generator/5559)
     - 安装代码生成器： `composer require "summerblue/generator:6.*" --dev`
 
-  - [5.3生成话题骨架](https://learnku.com/courses/laravel-intermediate-training/6.x/generate-topic/5560)
+  - 5.3 [生成话题骨架](https://learnku.com/courses/laravel-intermediate-training/6.x/generate-topic/5560)
     - 生成骨架命令
       ```
       php artisan make:scaffold Topic --schema="
@@ -250,7 +250,7 @@
       order:integer:unsigned:default(0),
       excerpt:text:nullable,slug:string:nullable"
       ```
-  - [5.4填充用户和话题数据](https://learnku.com/courses/laravel-intermediate-training/6.x/seeding-data/5561)
+  - 5.4 [填充用户和话题数据](https://learnku.com/courses/laravel-intermediate-training/6.x/seeding-data/5561)
     - TopicFactory
       ```
       // 随机取一个月以内的时间
@@ -258,12 +258,12 @@
       // 传参为生成最大时间不超过，因为创建时间需永远比更改时间要早
       $created_at = $faker->dateTimeThisMonth($updated_at);
       ```
-  - 5.5话题列表页面
+  - 5.5 话题列表页面
     - resources/views/topics/index.blade.php
     - resources/views/topics/_topic_list.blade.php
     - resources/views/topics/_sidebar.blade.php
 
-  - [5.6性能优化(避免N+1问题)] (https://learnku.com/courses/laravel-intermediate-training/6.x/improve-performance/5563)
+  - 5.6 [性能优化(避免N+1问题)] (https://learnku.com/courses/laravel-intermediate-training/6.x/improve-performance/5563)
     - 安装 Debugbar 工具
       ```
       composer require "barryvdh/laravel-debugbar:~3.2" --dev // 主版本号.次版本号.修订号， ~ 表示: 3.2 <= 版本号 < 4.0
@@ -276,7 +276,7 @@
         ```
         'enabled' => env('APP_DEBUG', false),
         ```
-  - [5.7分类下的话题列表](https://learnku.com/courses/laravel-intermediate-training/6.x/category-topics/5564)
+  - 5.7 [分类下的话题列表](https://learnku.com/courses/laravel-intermediate-training/6.x/category-topics/5564)
     - app/Http/Controllers/CategoriesController.php，分类类别共用 topics.index 视图
       ```
       return view('topics.index', compact('topics', 'category'));
@@ -306,7 +306,7 @@
       <li class="nav-item {{ category_nav_active(1) }}"><a class="nav-link" href="{{ route('categories.show', 1) }}">分享</a></li>
       <li class="nav-item {{ category_nav_active(2) }}"><a class="nav-link" href="{{ route('categories.show', 2) }}">教程</a></li>
       ```
-  - [5.8话题列表排序（本地作用域）](https://learnku.com/courses/laravel-intermediate-training/6.x/topic-order/5565)
+  - 5.8 [话题列表排序（本地作用域）](https://learnku.com/courses/laravel-intermediate-training/6.x/topic-order/5565)
     - 由于 Topics.index 和 Categories.show 中都要对 topic 进行排序，所以在 Topic 模型中定义**本地作用域**
       ```
       public function scopeWithOrder($query, $order)
@@ -338,3 +338,30 @@
       ```
       <li class="list-group-item pl-2 pr-2 border-right-0 border-left-0 @if($loop->first) border-top-0 @endif">
       ```
+## 帖子的 CRUD
+  - 6.1 [新建话题](https://learnku.com/courses/laravel-intermediate-training/6.x/new-posts/5568)
+    - 新建话题入口：`_header.blade.php`、`views/opics/_sidebar.blade.php`
+    - 数据模型 Topic：`protected $fillable = [ 'title', 'body', 'category_id', 'excerpt', 'slug' ];` 去掉了：user_id 等字段
+    - 分类数据传入视图：`return view('topics.create_and_edit', compact('topic', 'categories'));`
+    - 修改视图：resources/views/topics/create_and_edit.blade.php
+    - TopicController 创建话题
+      ```
+      $topic->fill($request->all());      $topic->user_id = Auth::id();      $topic->save(); // fill 方法会将传参的键值数组填充到模型的属性中
+      ```
+    - [模型观察器](https://learnku.com/courses/laravel-intermediate-training/6.x/new-posts/5568#9a3609)
+      - app/Observers/TopicObserver.php
+        ```
+        public function saving(Topic $topic)
+        {
+            $topic->excerpt = make_excerpt($topic->body); // make_excerpt() 是我们自定义的辅助方法
+        }
+        ```
+        - app/helpers.php
+          ```
+          function make_excerpt($value, $length = 200)
+          {
+              $excerpt = trim(preg_replace('/\r\n|\r|\n+/', ' ', strip_tags($value)));
+              return Str::limit($excerpt, $length);
+          }
+          ```
+      - 修改表单验证类：app/Http/Requests/TopicRequest.php
