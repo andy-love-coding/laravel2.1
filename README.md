@@ -276,3 +276,35 @@
         ```
         'enabled' => env('APP_DEBUG', false),
         ```
+  - [5.7分类下的话题列表](https://learnku.com/courses/laravel-intermediate-training/6.x/category-topics/5564)
+    - app/Http/Controllers/CategoriesController.php，分类类别共用 topics.index 视图
+      ```
+      return view('topics.index', compact('topics', 'category'));
+      ```
+    - 修改视图：topics._topic_list，topics.index
+    - 因为 categories.show 与 topics.index 共用了视图，也需要共用css，所以需修改 resoures/sass/app.scss
+      ```
+      /* Topic Index Page */
+      .topics-index-page, .categories-show-page { ...}
+      ```
+    - 修改网页title，在 topics.index 视图中：@section('title', isset($category) ? $category->name : '话题列表')
+    - 增加顶部导航栏 及 导航栏 Active 状态
+      - 安装 laravel active
+        ```
+        composer require "summerblue/laravel-active:6.*"
+        ```
+      - 利用 laravel active，在 app/helpers.php 创建一个辅助函数
+        ```
+        function category_nav_active($category_id)
+        {
+            return active_class((if_route('categories.show') && if_route_param('category', $category_id)));
+        }
+        ```
+      - 在 _header.balde.php 中增加导航栏
+      ```
+      <li class="nav-item {{ active_class(if_route('topics.index')) }}"><a class="nav-link" href="{{ route('topics.index') }}">话题</a></li>
+      <li class="nav-item {{ category_nav_active(1) }}"><a class="nav-link" href="{{ route('categories.show', 1) }}">分享</a></li>
+      <li class="nav-item {{ category_nav_active(2) }}"><a class="nav-link" href="{{ route('categories.show', 2) }}">教程</a></li>
+      ```
+
+
