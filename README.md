@@ -399,7 +399,7 @@
         </script>
       @stop
       ```
-  - 6.2 [simditor编辑器上传图片](https://learnku.com/courses/laravel-intermediate-training/6.x/upload-pictures/5570)
+  - 6.3 [simditor编辑器上传图片](https://learnku.com/courses/laravel-intermediate-training/6.x/upload-pictures/5570)
     - 路由：Route::post('upload_image', 'TopicsController@uploadImage')->name('topics.upload_image');
     - JS脚本设置编辑器，在resources/views/topics/create_and_edit.blade.php 中
       ```
@@ -416,7 +416,7 @@
               connectionCount: 3, // 最多只能同时上传 3 张图片；
               leaveConfirm: '文件上传中，关闭此页面将取消上传。'
             },
-            pasteImage: true,
+            pasteImage: true, // 设定是否支持图片黏贴上传，这里我们使用 true 进行开启
           });
         });
       </script>
@@ -434,5 +434,22 @@
       ```
       *
       !.gitignore
+      ```
+  - 6.4 [显示帖子](https://learnku.com/courses/laravel-intermediate-training/6.x/topics-show/5571)
+    - 修改模板：resources/views/topics/show.blade.php
+      - 在 resources/views/layouts/app.blade.php 中设置 SEO 的 description 锚点
+        ```
+        <title>@yield('title', 'LaraBBS') - Laravel 进阶教程</title>
+        <meta name="description" content="@yield('description', 'LaraBBS 爱好者社区')" />
+        ```
+    - 新建样式：resources/sass/_topic_body.scss
+      ```
+      .simditor-body, .topic-body {...}
+      ```
+    - 在 resources/sass/app.scss 引入新建的样式 _topic_body.scss
+      ```
+      /* Topic Show Page */
+      @import "topic_body";
+      .topics-show-page {...}
       ```
 
