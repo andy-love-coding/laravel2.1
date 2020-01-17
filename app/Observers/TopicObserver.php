@@ -11,6 +11,9 @@ class TopicObserver
 {
     public function saving(Topic $topic)
     {
+        // 用 HTMLPurifier 过滤内容，避免 XSS 攻击
+        $topic->body = clean($topic->body, 'user_topic_body');
+
         $topic->excerpt = make_excerpt($topic->body);
     }
 }

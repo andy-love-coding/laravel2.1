@@ -452,4 +452,45 @@
       @import "topic_body";
       .topics-show-page {...}
       ```
+  - 6.5 [XSS 安全漏洞](https://learnku.com/courses/laravel-intermediate-training/6.x/safety-problem/5572)
+    - XSS 也称跨站脚本攻击 (Cross Site Scripting)，一种比较常见的 XSS 攻击是 Cookie 窃取，到你的 Cookie 以后即可伪造你的身份登录网站。
+    - 有两种方法可以避免 XSS 攻击：
+      - 第一种，对用户提交的数据进行过滤；
+      - 第二种，Web 网页显示时对数据进行特殊处理，一般使用 htmlspecialchars() 输出。Laravel 的 Blade 语法 {{ }} 会自动调用 PHP htmlspecialchars 函数来避免 XSS 攻击。
+    - 我们的话题内容不是用`{{ }}`转义输出的，而是用`{!! $topic->body !!}`原义输出的。所以必须用第一种方法，确保存储的数据就是安全的，而不是指望在输出时进行处理。
+    - 虽然编辑器 Simditor 默认为我们的内容提供转义（存储时转义了），但是这样并不安全，因为存储内容并不一定要通过网页(编辑器)，比如通过chrome控制台也可以向服务器发送请求存储内容，此时就跳过了网页编辑器的转义过滤，存储了不安全的内容。
+    - 使用 [HTMLPurifier](http://htmlpurifier.org/) 过滤数据，可以防止各种 XSS 变种攻击。
+      - 安装：composer require "mews/purifier:~3.0"
+      - 生成配置文件：php artisan vendor:publish // 数字选择，也可以 --provider="Mews\Purifier\PurifierServiceProvider"
+      - 配置 config/purifier.php
+        ```
+        <?php
+        return [
+            'encoding'      => 'UTF-8',
+            'finalize'      => true,
+            'cachePath'     => storage_path('app/purifier'),
+            'cacheFileMode' => 0755,
+            'settings'      => [
+                'user_topic_body' => [
+                    'HTML.Doctype'             => 'XHTML 1.0 Transitional',
+                    'HTML.Allowed'             => 'div,b,strong,i,em,a[href|title],ul,ol,ol[start],li,p[style],br,span[style],img[width|height|alt|src],*[style|class],pre,hr,code,h2,h3,h4,h5,h6,blockquote,del,table,thead,tbody,tr,th,td',
+                    'CSS.AllowedProperties'    => 'font,font-size,font-weight,font-style,margin,width,height,font-family,text-decoration,padding-left,color,background-color,text-align',
+                    'AutoFormat.AutoParagraph' => true,
+                    'AutoFormat.RemoveEmpty'   => true,
+                ],
+            ],
+        ];
+        ```
+        配置里的 user_topic_body 是我们为话题内容定制的，配合 clean() 方法使用，如下
+        在 app/Observers/TopicObserver.php：
+        ```
+        public function saving(Topic $topic)
+        {
+            // 用 HTMLPurifier 过滤内容，避免 XSS 攻击
+            $topic->body = clean($topic->body, 'user_topic_body');
+
+            $topic->excerpt = make_excerpt($topic->body);
+        }
+        ```
+
 
