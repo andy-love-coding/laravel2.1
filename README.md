@@ -365,3 +365,37 @@
           }
           ```
       - 修改表单验证类：app/Http/Requests/TopicRequest.php
+  - 6.2 [simditor编辑器](https://learnku.com/courses/laravel-intermediate-training/6.x/editor/5569)
+    - 下载 simditor-2.3.6 [github下载链接](https://github.com/mycolorway/simditor/releases)
+    - 将下载的 simditor.css 放置于 `resources/editor/css` 文件夹
+    - 将 hotkeys.js, module.js, simditor.js, uploader.js 四个文件放置于 `resources/editor/js` 文件夹中
+    - 修改 webpack.mix.js，使用 [Mix]() 的 copyDirectory 方法，将编辑器的 CSS 和 JS 文件复制到 public 文件夹下
+      ```
+      mix.js('resources/js/app.js', 'public/js')
+      .sass('resources/sass/app.scss', 'public/css')
+      .version()
+      .copyDirectory('resources/editor/js', 'public/js')
+      .copyDirectory('resources/editor/css', 'public/css');
+      ```
+    - 在 resources/views/layouts/app.blade.php 中加锚点：  @yield('styles')、@yield('scripts')
+    - 在 resources/views/topics/create_and_edit.blade.php 中加载 simditor 文件，并初始化 simditor 编辑器
+      ```
+      @section('styles')
+      <link rel="stylesheet" type="text/css" href="{{ asset('css/simditor.css') }}">
+      @stop
+
+      @section('scripts')
+        <script type="text/javascript" src="{{ asset('js/module.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/hotkeys.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/uploader.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/simditor.js') }}"></script>
+
+        <script>
+          $(document).ready(function() {
+            var editor = new Simditor({
+              textarea: $('#editor'),
+            });
+          });
+        </script>
+      @stop
+      ```
