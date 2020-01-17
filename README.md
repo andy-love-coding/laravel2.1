@@ -505,3 +505,23 @@
       @endforeach
       ```
     - 权限控制 `app/Policies/TopicPolicy.php`：return $topic->user_id == $user->id;
+  - 6.7 删除帖子
+    - app/Models/User.php 中 编写可读性更强的代码
+      ```
+      public function isAuthorOf($model)
+      {
+          return $this->id == $model->user_id;
+      }
+      ```
+    - app/Policies/TopicPolicy.php 中使用可读性更强的授权代码
+      ```
+      public function destroy(User $user, Topic $topic)
+      {
+          return $user->isAuthorOf($topic);
+      }
+      ```
+    - resources/views/topics/show.blade.php 构建「删除表单」，并使用 @can 做「编辑和删除」的判断
+
+
+
+
