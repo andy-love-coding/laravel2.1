@@ -338,7 +338,7 @@
       ```
       <li class="list-group-item pl-2 pr-2 border-right-0 border-left-0 @if($loop->first) border-top-0 @endif">
       ```
-## 帖子的 CRUD
+## 6帖子的 CRUD
   - 6.1 [新建话题](https://learnku.com/courses/laravel-intermediate-training/6.x/new-posts/5568)
     - 新建话题入口：`_header.blade.php`、`views/opics/_sidebar.blade.php`
     - 数据模型 Topic：`protected $fillable = [ 'title', 'body', 'category_id', 'excerpt', 'slug' ];` 去掉了：user_id 等字段
@@ -399,3 +399,40 @@
         </script>
       @stop
       ```
+  - 6.2 [simditor编辑器上传图片](https://learnku.com/courses/laravel-intermediate-training/6.x/upload-pictures/5570)
+    - 路由：Route::post('upload_image', 'TopicsController@uploadImage')->name('topics.upload_image');
+    - JS脚本设置编辑器，在resources/views/topics/create_and_edit.blade.php 中
+      ```
+      <script>
+        $(document).ready(function() {
+          var editor = new Simditor({
+            textarea: $('#editor'),
+            upload: {
+              url: '{{ route('topics.upload_image') }}', // 处理上传图片的 URL；
+              params: {
+                _token: '{{ csrf_token() }}'
+              },
+              fileKey: 'upload_file', // 是服务器端获取图片的键值，我们设置为 upload_file;
+              connectionCount: 3, // 最多只能同时上传 3 张图片；
+              leaveConfirm: '文件上传中，关闭此页面将取消上传。'
+            },
+            pasteImage: true,
+          });
+        });
+      </script>
+      ```
+    - 控制器处理图片，根据 [simditor编辑器上传图片文档](https://simditor.tower.im/docs/doc-config.html#anchor-upload)
+      ```
+      {
+        "success": true/false,
+        "msg": "error message", # optional
+        "file_path": "[real file path]"
+      }
+      ```
+      tips: 在 Laravel 的控制器方法中，如果直接返回数组，将会被自动解析为 JSON
+    - public/uploads/images/topics/.gitignore，避免topics图片纳入 Git 版本控制中
+      ```
+      *
+      !.gitignore
+      ```
+

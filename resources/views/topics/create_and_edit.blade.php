@@ -64,13 +64,23 @@
 @section('scripts')
   <script type="text/javascript" src="{{ asset('js/module.js') }}"></script>
   <script type="text/javascript" src="{{ asset('js/hotkeys.js') }}"></script>
-  <script type="text/javascript" src="{{ asset('js/uploads.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('js/uploader.js') }}"></script>
   <script type="text/javascript" src="{{ asset('js/simditor.js') }}"></script>
 
   <script>
     $(document).ready(function() {
       var editor = new Simditor({
         textarea: $('#editor'),
+        upload: {
+          url: '{{ route('topics.upload_image') }}', // 处理上传图片的 URL；
+          params: {
+            _token: '{{ csrf_token() }}'
+          },
+          fileKey: 'upload_file', // 是服务器端获取图片的键值，我们设置为 upload_file
+          connectionCount: 3, // 最多只能同时上传 3 张图片；
+          leaveConfirm: '文件上传中，关闭此页面将取消上传。'
+        },
+        pasteImage: true,
       });
     });
   </script>
