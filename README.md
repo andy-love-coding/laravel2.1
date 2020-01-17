@@ -492,5 +492,16 @@
             $topic->excerpt = make_excerpt($topic->body);
         }
         ```
-
-
+    - **服务器端原则是**：只要是用户提交的数据并且显示时不做 HTML 转义的，入库存储是都必须做 XSS 过滤。
+    - [浅谈 XSS 攻击的那些事（附常用绕过姿势）](https://zhuanlan.zhihu.com/p/26177815)
+  - 6.6 编辑帖子
+    - TopicsController 中 edit() 方法传送 `categories` 变量到视图 `topics.create_and_edit` 中
+    - `opics/create_and_edit.blade` 中选中与 $topic->category_id 一致的分类
+      ```
+      @foreach ($categories as $value)
+        <option value="{{ $value->id }}" {{ $topic->category_id == $value->id ? 'selected' : '' }}>
+          {{ $value->name }}
+        </option>
+      @endforeach
+      ```
+    - 权限控制 `app/Policies/TopicPolicy.php`：return $topic->user_id == $user->id;

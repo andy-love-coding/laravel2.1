@@ -11,7 +11,7 @@
       <div class="card">
         <div class="card-body">
           <div class="text-center">
-            作者：{{ $topic->name }}
+            作者：{{ $topic->user->name }}
           </div>
           <hr>
           <div class="media">
