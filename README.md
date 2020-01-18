@@ -74,6 +74,7 @@
   - 编译：npm run dev ，编译后在 `public/fonts/vender/../../ ` 中会有字体图标文件
 
 ## 3注册登录
+
 - 3.1 [用户认证脚手架](https://learnku.com/courses/laravel-intermediate-training/6.x/registration-and-login/5541)
   - 1.执行：php artisan ui:auth
   - 2.修改：routes/web.php 
@@ -166,6 +167,7 @@
 
 ## 4 用户相关
   - 4.1 个人页面
+ 
   - 4.2 编辑个人资料
     - Users表中添加字段：avatar、introduction, 添加字段后，记得在User模型中添加 $fillable
     - 导航中增加入口：`<a class="dropdown-item" href="{{ route('users.edit', Auth::id()) }}">编辑资料</a>`
@@ -179,6 +181,7 @@
         ```
         return redirect()->route('users.show', $user->id)->with('success', '个人资料更新成功！');
         ```
+ 
   - 4.4 上传头像
     - 创建工具类（图片处理器）：app/Handlers/ImageUploadHandler.php
     - 在类引入，即可使用：use App\Handlers\ImageUploadHandler;
@@ -188,12 +191,14 @@
       !.gitignore
       ```
       上面的两行代码意为：当前文件夹下，忽略所有文件，除了 .gitignore。
+ 
   - 4.5 显示头像&现在图片分辨率
     - 在导航和个人页面中显示头像
     - 在表单验证类 UserRequest 中验证图片的类型和分辨率
       ```
       'avatar' => 'mimes:jpeg,bmp,png,gif|dimensions:min_width=208,min_height=208',     
       ```
+ 
   - 4.7 [裁剪头像](https://learnku.com/courses/laravel-intermediate-training/6.x/avatar-croping/5555)
     - 安装 [Intervention/image](https://github.com/Intervention/image) 扩展包来处理图片裁切的逻辑
       ```
@@ -209,6 +214,7 @@
       public function save($file, $folder, $file_prefix, $max_width = false)
       $image->resize($max_width, null, function ($constraint){}
       ```
+ 
   - 4.8 授权访问
     - 限制游客访问，在 UsersController 中： `$this->middleware('auth', ['except' => ['show']]);`
     - 只有自己能编辑自己，app/Policies/UserPolicy.php：`return $currentUser->id === $user->id;`
@@ -234,6 +240,7 @@
       up()中：DB::table('categories')->insert($categories);
       down()中：DB::table('categories')->truncate();
       ```
+  
   - 5.2 [代码生成器（Laravel 5.x Scaffold Generator）](https://learnku.com/courses/laravel-intermediate-training/6.x/code-generator/5559)
     - 安装代码生成器： `composer require "summerblue/generator:6.*" --dev`
 
@@ -250,6 +257,7 @@
       order:integer:unsigned:default(0),
       excerpt:text:nullable,slug:string:nullable"
       ```
+ 
   - 5.4 [填充用户和话题数据](https://learnku.com/courses/laravel-intermediate-training/6.x/seeding-data/5561)
     - TopicFactory
       ```
@@ -258,6 +266,7 @@
       // 传参为生成最大时间不超过，因为创建时间需永远比更改时间要早
       $created_at = $faker->dateTimeThisMonth($updated_at);
       ```
+  
   - 5.5 话题列表页面
     - resources/views/topics/index.blade.php
     - resources/views/topics/_topic_list.blade.php
@@ -276,6 +285,7 @@
         ```
         'enabled' => env('APP_DEBUG', false),
         ```
+  
   - 5.7 [分类下的话题列表](https://learnku.com/courses/laravel-intermediate-training/6.x/category-topics/5564)
     - app/Http/Controllers/CategoriesController.php，分类类别共用 topics.index 视图
       ```
@@ -306,6 +316,7 @@
       <li class="nav-item {{ category_nav_active(1) }}"><a class="nav-link" href="{{ route('categories.show', 1) }}">分享</a></li>
       <li class="nav-item {{ category_nav_active(2) }}"><a class="nav-link" href="{{ route('categories.show', 2) }}">教程</a></li>
       ```
+  
   - 5.8 [话题列表排序（本地作用域）](https://learnku.com/courses/laravel-intermediate-training/6.x/topic-order/5565)
     - 由于 Topics.index 和 Categories.show 中都要对 topic 进行排序，所以在 Topic 模型中定义**本地作用域**
       ```
@@ -327,6 +338,7 @@
       ```
       Request::url() 获取的是当前请求的 URL
     - [本地作用域](https://learnku.com/docs/laravel/6.x/eloquent/5176#4330c1)说明文档
+  
   - 5.9 用户发布的话题列表
     - 导航栏加icon
     - User模型新增一对多关联模型：return $this->hasMany(Topic::class);
@@ -365,6 +377,7 @@
           }
           ```
       - 修改表单验证类：app/Http/Requests/TopicRequest.php
+ 
   - 6.2 [simditor编辑器](https://learnku.com/courses/laravel-intermediate-training/6.x/editor/5569)
     - 下载 simditor-2.3.6 [github下载链接](https://github.com/mycolorway/simditor/releases)
     - 将下载的 simditor.css 放置于 `resources/editor/css` 文件夹
@@ -399,6 +412,7 @@
         </script>
       @stop
       ```
+ 
   - 6.3 [simditor编辑器上传图片](https://learnku.com/courses/laravel-intermediate-training/6.x/upload-pictures/5570)
     - 路由：Route::post('upload_image', 'TopicsController@uploadImage')->name('topics.upload_image');
     - JS脚本设置编辑器，在resources/views/topics/create_and_edit.blade.php 中
@@ -435,6 +449,7 @@
       *
       !.gitignore
       ```
+  
   - 6.4 [显示帖子](https://learnku.com/courses/laravel-intermediate-training/6.x/topics-show/5571)
     - 修改模板：resources/views/topics/show.blade.php
       - 在 resources/views/layouts/app.blade.php 中设置 SEO 的 description 锚点
@@ -452,6 +467,7 @@
       @import "topic_body";
       .topics-show-page {...}
       ```
+  
   - 6.5 [XSS 安全漏洞](https://learnku.com/courses/laravel-intermediate-training/6.x/safety-problem/5572)
     - XSS 也称跨站脚本攻击 (Cross Site Scripting)，一种比较常见的 XSS 攻击是 Cookie 窃取，到你的 Cookie 以后即可伪造你的身份登录网站。
     - 有两种方法可以避免 XSS 攻击：
@@ -494,6 +510,7 @@
         ```
     - **服务器端原则是**：只要是用户提交的数据并且显示时不做 HTML 转义的，入库存储是都必须做 XSS 过滤。
     - [浅谈 XSS 攻击的那些事（附常用绕过姿势）](https://zhuanlan.zhihu.com/p/26177815)
+  
   - 6.6 编辑帖子
     - TopicsController 中 edit() 方法传送 `categories` 变量到视图 `topics.create_and_edit` 中
     - `opics/create_and_edit.blade` 中选中与 $topic->category_id 一致的分类
@@ -505,6 +522,7 @@
       @endforeach
       ```
     - 权限控制 `app/Policies/TopicPolicy.php`：return $topic->user_id == $user->id;
+ 
   - 6.7 删除帖子
     - app/Models/User.php 中 编写可读性更强的代码
       ```
@@ -522,6 +540,78 @@
       ```
     - resources/views/topics/show.blade.php 构建「删除表单」，并使用 @can 做「编辑和删除」的判断
 
+  - 6.8 [SEO 友好的 URL(强制跳转)](https://learnku.com/courses/laravel-intermediate-training/6.x/seo-friendly-url/5575)
+    - 翻译处理器 app/Handlers/SlugTranslateHandler.php
+      - 安装依赖：[Guuzle](https://github.com/guzzle/guzzle)
+        ```
+        composer require "guzzlehttp/guzzle:~6.3"
+        ```
+      - 安装依赖 [PinYin](https://github.com/overtrue/pinyin)
+        ```
+        composer require "overtrue/pinyin:~4.0"
+        ```
+      - 配置百度翻译API信息，config/services.php
+        ```
+        return [
+            ...
+            'baidu_translate' => [
+                'appid' => env('BAIDU_TRANSLATE_APPID'),
+                'key'   => env('BAIDU_TRANSLATE_KEY'),
+            ],
+        ];
+        ```
+      - 配置 .env
+        ```
+        BAIDU_TRANSLATE_APPID=201703xxxxxxxxxxxxx
+        BAIDU_TRANSLATE_KEY=q0s6axxxxxxxxxxxxxxxxx
+        ```
+      - 复制一份到 .env.example
+        ```
+        BAIDU_TRANSLATE_APPID=
+        BAIDU_TRANSLATE_KEY=
+        ```
+    - 翻译调用 app/Observers/TopicObserver.php
+      ```
+      public function saving(Topic $topic)
+      {
+          // 如 slug 字段无内容，即使用翻译器对 title 进行翻译
+          if ( ! $topic->slug) {
+              $topic->slug = app(SlugTranslateHandler::class)->translate($topic->title);
+          }
+      }
+      ```
+    - 显示修改
+      - 修改路由文件 web.php
+        ```
+        Route::get('topics/{topic}/{slug?}', 'TopicsController@show')->name('topics.show');
+        ```
+      - 新建 link() 方法，在 app/Models/Topic.php 中
+        ```
+        public function link($params = [])
+        {
+            return route('topics.show', array_merge([$this->id, $this->slug], $params));
+        }
+        ```
+      - 全局搜索 'topics.show'
+        1.修改控制器中的跳转
+        ```
+        把：    return redirect()->route('topics.show', $topic->id)->with('success', '成功创建话题！');
+        修改成： return redirect()->to($topic->link())->with('success', '成功创建话题！');
+        ```
+        2.修改模板里的跳转
+        ```
+        把：    <a href="{{ route('topics.show', [$topic->id]) }}" title="{{ $topic->title }}">
+        修改成： <a href="{{ $topic->link() }}" title="{{ $topic->title }}">
+        ```
+    - 强制跳转：TopicsController.php
+      ```
+      public function show(Request $request, Topic $topic)
+      {
+          // URL 矫正
+          if ( ! empty($topic->slug) && $topic->slug != $request->slug) {
+              return redirect($topic->link(), 301);
+          }
 
-
-
+          return view('topics.show', compact('topic'));
+      }
+      ```
