@@ -615,3 +615,56 @@
           return view('topics.show', compact('topic'));
       }
       ```
+  - 6.9 [使用队列](https://learnku.com/courses/laravel-intermediate-training/6.x/using-queues/5576)
+    - 配置队列 （使用 Redis 来作为我们的队列驱动器）
+      ```
+      composer require "predis/predis:~1.1"
+      ```
+      .env中修改环境变量 QUEUE_CONNECTION 的值为 redis
+      ```
+      QUEUE_CONNECTION=redis
+      REDIS_CLIENT=predis
+      ```
+    - 生成任务类：`php artisan make:job TranslateSlug`
+      app/Jobs/TranslateSlug.php
+      ```
+      class TranslateSlug implements ShouldQueue
+      {
+          use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+          protected $topic;
+          public function __construct(Topic $topic)
+          {
+              // 队列任务构造器中接收了 Eloquent 模型，将会只序列化模型的 ID
+              $this->topic = $topic;
+          }
+          public function handle()
+          {
+              // 请求百度 API 接口进行翻译
+              $slug = app(SlugTranslateHandler::class)->translate($this->topic->title);
+              // 为了避免模型监控器死循环调用，我们使用 DB 类直接对数据库进行操作
+              \DB::table('topics')->where('id', $this->topic->id)->update(['slug' => $slug]);
+          }
+      }
+      ```
+    - 任务分发 app/Observers/TopicObserver.php
+      ```
+      public function saved(Topic $topic)
+      {
+          // 如 slug 字段无内容，即使用翻译器对 title 进行翻译
+          if ( ! $topic->slug) {
+              // 推送任务到队列
+              dispatch(new TranslateSlug($topic));
+          }
+      }
+      ```
+    - 测试队列，动队列系统，进入监听状态：`php artisan queue:listen`
+    - 队列监控 Horizon（仪表盘监控）
+      - 安装：`composer require "laravel/horizon:~3.1"`
+      - 发布：`php artisan vendor:publish // 选择对应数字`
+      - Horizon 是一个监控程序，需要常驻运行，启动监听：`php artisan horizon`
+    - 线上部署须知
+      - 使用 Supervisor 进程工具进行管理，配置和使用请参照 [文档](https://learnku.com/docs/laravel/6.x/horizon/5190#Supervisor-%E9%85%8D%E7%BD%AE) 进行配置；
+      需要配置一个进程管理工具来监控 artisan horizon 命令的执行，以便在其意外退出时自动重启
+      - 每一次部署代码时，需 `artisan horizon:terminate`终止当前 Horizon 主进程，然后再 `artisan horizon` 重新加载代码
+    - 开发环境的队列驱动改回 sync 同步模式，
+      也就是说不使用任何队列，实时执行，.env中：`QUEUE_CONNECTION=sync`
