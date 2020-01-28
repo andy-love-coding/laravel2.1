@@ -350,6 +350,7 @@
       ```
       <li class="list-group-item pl-2 pr-2 border-right-0 border-left-0 @if($loop->first) border-top-0 @endif">
       ```
+
 ## 6帖子的 CRUD
   - 6.1 [新建话题](https://learnku.com/courses/laravel-intermediate-training/6.x/new-posts/5568)
     - 新建话题入口：`_header.blade.php`、`views/opics/_sidebar.blade.php`
@@ -668,3 +669,14 @@
       - 每一次部署代码时，需 `artisan horizon:terminate`终止当前 Horizon 主进程，然后再 `artisan horizon` 重新加载代码
     - 开发环境的队列驱动改回 sync 同步模式，
       也就是说不使用任何队列，实时执行，.env中：`QUEUE_CONNECTION=sync`
+
+## 7 帖子回复
+  - 7.1 回复数据(填充“回复”假数据)
+    - 代码生成器 构建骨架
+      ```
+      php artisan make:scaffold Reply --schema="topic_id:integer:unsigned:default(0):index,user_id:bigInteger:unsigned:default(0):index,content:text"
+      ```
+    - 数据模型：一对多关系（User、Topic、Reply）
+    - 生成假数据 database/factories/ReplyFactory.php：`$time = $faker->dateTimeThisMonth();`
+    - 数据填充 database/seeds/RepliesTableSeeder.php
+    - 开始填充：php artisan migrate:refresh --seed
