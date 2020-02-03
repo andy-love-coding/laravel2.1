@@ -1,6 +1,14 @@
 # LaravelTest2.1——LaraBBS
 
-## 2舞台布置
+# 目录
+  - 2 舞台布置
+  - 3 注册登录
+  - 4 [用户相关](https://github.com/andy-love-coding/laravel2.1#4-%E7%94%A8%E6%88%B7%E7%9B%B8%E5%85%B3)
+  - 5 [帖子列表]()
+  - 6 帖子的 CRUD
+  - 7 帖子回复
+
+## 2 舞台布置 
 
 - Composer 加速
   ```
@@ -73,7 +81,7 @@
     ```
   - 编译：npm run dev ，编译后在 `public/fonts/vender/../../ ` 中会有字体图标文件
 
-## 3注册登录
+## 3 注册登录
 
 - 3.1 [用户认证脚手架](https://learnku.com/courses/laravel-intermediate-training/6.x/registration-and-login/5541)
   - 1.执行：php artisan ui:auth
@@ -219,7 +227,7 @@
     - 限制游客访问，在 UsersController 中： `$this->middleware('auth', ['except' => ['show']]);`
     - 只有自己能编辑自己，app/Policies/UserPolicy.php：`return $currentUser->id === $user->id;`
 
-## 5帖子列表
+## 5 帖子列表
   - 5.1 [帖子分类模型及真数据填充](https://learnku.com/courses/laravel-intermediate-training/6.x/post-categories/5558)
     - 创建分类模型 Category ，**-m** 表示创建模型的同时，顺便创建迁移文件（migration）
     ```
@@ -351,7 +359,7 @@
       <li class="list-group-item pl-2 pr-2 border-right-0 border-left-0 @if($loop->first) border-top-0 @endif">
       ```
 
-## 6帖子的 CRUD
+## 6 帖子的 CRUD
   - 6.1 [新建话题](https://learnku.com/courses/laravel-intermediate-training/6.x/new-posts/5568)
     - 新建话题入口：`_header.blade.php`、`views/opics/_sidebar.blade.php`
     - 数据模型 Topic：`protected $fillable = [ 'title', 'body', 'category_id', 'excerpt', 'slug' ];` 去掉了：user_id 等字段
@@ -671,7 +679,7 @@
       也就是说不使用任何队列，实时执行，.env中：`QUEUE_CONNECTION=sync`
 
 ## 7 帖子回复
-  - 7.1 回复数据(填充“回复”假数据)
+  - [7.1 回复数据](https://learnku.com/courses/laravel-intermediate-training/6.x/reply-model/5578)(填充“回复”假数据)
     - 代码生成器 构建骨架
       ```
       php artisan make:scaffold Reply --schema="topic_id:integer:unsigned:default(0):index,user_id:bigInteger:unsigned:default(0):index,content:text"
@@ -680,3 +688,30 @@
     - 生成假数据 database/factories/ReplyFactory.php：`$time = $faker->dateTimeThisMonth();`
     - 数据填充 database/seeds/RepliesTableSeeder.php
     - 开始填充：php artisan migrate:refresh --seed
+
+  - [7.2 回复列表](https://learnku.com/courses/laravel-intermediate-training/6.x/replies-list/5579)
+    - 清理模板：rm -rf resources/views/replies/
+    - 话题回复列表 resources/views/topics/show.blade.php：
+      ```
+      @include('topics._reply_box', ['topic' => $topic])
+      @include('topics._reply_list', ['replies' => $topic->replies()->with('user')->get()])
+      ```
+    - 回复列表子模板:  resources/views/topics/_reply_list.blade.php
+    - 样式优化
+    - 我的回复列表 resources/views/users/show.blade.php：
+      ```
+      @if (if_query('tab', 'replies'))
+        @include('users._replies', ['replies' => $user->replies()->with('topic')->recent()->paginate(5)])
+      @else
+        @include('users._topics', ['topics' => $user->topics()->recent()->paginate(5)])
+      @endif
+      ```
+    - 我的回复列表子模板：resources/views/users/_replies.blade.php
+      ```
+      {!! $replies->appends(Request::except('page'))->render() !!}
+      ```
+      **分页中 appends() 方法可以使 URI 中的请求参数得到继承。**
+    
+
+
+
